@@ -2,7 +2,9 @@ const Sequelize = require('sequelize')
 const { DATABASE_URL, TEST_DATABASE_URL } = require('./config')
 
 const isTest = process.env.TESTING === 'true'
-const url = isTest ? TEST_DATABASE_URL : DATABASE_URL
+const url = process.env.TESTING === 'true'
+  ? TEST_DATABASE_URL
+  : (DATABASE_URL || TEST_DATABASE_URL)
 
 const sequelize = new Sequelize(url, isTest ? {} : {
   dialectOptions: {
