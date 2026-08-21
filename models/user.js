@@ -10,6 +10,10 @@ User.init({
     primaryKey: true,
     autoIncrement: true
   },
+  passwordHash: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
   username: {
     type: DataTypes.STRING,
     unique: true,
