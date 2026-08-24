@@ -40,12 +40,37 @@ router.post('/', async (req, res, next) => {
   }
 })
 
-router.get('/:username', async (req, res) => {
-  const user = await User.findOne({ where: { username: req.params.username } })
-  if (user) {
-    res.json(user)
-  } else {
-    res.status(404).end()
+router.get('/:id', async (req, res, next) => {
+  try {
+    const readingListWhere = {}
+    if (req.query.read === 'true') {
+      readingListWhere.read = true
+    }
+    else if (req.query.read === 'false') {
+      readingListWhere.read = false
+    }
+    const user = await User.findByPk(req.params.id, {
+      include: {
+        model: Blog,
+        as: 'readings',
+        attributes: ['id', 'url', 'title', 'author', 'likes', 'year'],
+        through: {
+          attributes: ['id', 'read'],
+          as: "reading_list",
+          where: readingListWhere
+        }
+      }
+    })
+    if (!user) {
+      return res.status(404).end()
+    }
+    res.json({
+      name: user.name,
+      username: user.username,
+      readings: user.readings
+    })
+  } catch (error) {
+    next(error)
   }
 })
 
