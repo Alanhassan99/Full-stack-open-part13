@@ -18,7 +18,7 @@ app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/logout', loginRouter)
-app.use('/api/readinglist', readingListRouter)
+app.use('/api/readinglists', readingListRouter)
 app.use('/api/authors', authorsRouter)
 app.get('/', (req, res) => {
   res.status(200).send('ok')

@@ -25,13 +25,19 @@ router.post('/', async (request, response) => {
 
 router.delete('/', async (request, response) => {
   const authorization = request.get('authorization')
-  const token = authorization.substring(7)
-  const session = await Session.findOne({ where: { token: token } })
-  if (!session) {
-    return response.status(401).json({ error: 'THERE IS NO SESSION' })
+
+  if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
+    return response.status(401).json({ error: 'token missing' })
   }
+
+  const token = authorization.substring(7)
+  const session = await Session.findOne({ where: { token } })
+
+  if (!session) {
+    return response.status(401).json({ error: 'no active session' })
+  }
+
   await session.destroy()
   response.status(204).end()
-
 })
 module.exports = router
